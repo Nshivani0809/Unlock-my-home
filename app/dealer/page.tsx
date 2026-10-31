@@ -1,0 +1,4 @@
+import Link from "next/link";
+export default function DealerPage() {
+  return <main className="container page-shell"><div className="eyebrow gold-text">PARTNER WORKSPACE</div><h1 className="page-title">Dealer <em>portal.</em></h1><p className="muted">The production dealer workspace will provide private listing management, photo uploads, enquiries and approval tracking.</p><div className="portal-grid"><div className="portal-tile"><b>01</b><h3>My properties</h3><p>Create, edit and track your own listings.</p></div><div className="portal-tile"><b>02</b><h3>Enquiries</h3><p>Review buyer enquiries and visit requests.</p></div><div className="portal-tile"><b>03</b><h3>Listing status</h3><p>See pending, approved and rejected listings.</p></div></div><Link className="btn btn-gold" href="/login?mode=dealer">Dealer sign in</Link></main>;
+}
