@@ -1,17 +1,55 @@
+
 import { NextResponse, type NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
+import { createServerClient, type CookieOptions } from "@supabase/ssr";
+
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
   const next = searchParams.get("next") ?? "/";
+
   if (code) {
-    const response = NextResponse.redirect(new URL(next.startsWith("/") && !next.startsWith("//") ? next : "/", origin));
+    const safeNext =
+      next.startsWith("/") && !next.startsWith("//") ? next : "/";
+
+    const response = NextResponse.redirect(
+      new URL(safeNext, origin)
+    );
+
     const url = process.env.SUPABASE_URL;
     const key = process.env.SUPABASE_ANON_KEY;
-    if (!url || !key) return NextResponse.redirect(new URL("/login?error=auth-not-configured", origin));
-    const supabase = createServerClient(url, key, { cookies: { getAll: () => request.cookies.getAll(), setAll: (cookies) => cookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options)) } });
+
+    if (!url || !key) {
+      return NextResponse.redirect(
+        new URL("/login?error=auth-not-configured", origin)
+      );
+    }
+
+    const supabase = createServerClient(url, key, {
+      cookies: {
+        getAll: () => request.cookies.getAll(),
+
+        setAll: (
+          cookies: {
+            name: string;
+            value: string;
+            options?: CookieOptions;
+          }[]
+        ) => {
+          cookies.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
+          });
+        },
+      },
+    });
+
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) return response;
+
+    if (!error) {
+      return response;
+    }
   }
-  return NextResponse.redirect(new URL("/login?error=verification", origin));
+
+  return NextResponse.redirect(
+    new URL("/login?error=verification", origin)
+  );
 }
