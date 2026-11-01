@@ -1,0 +1,9 @@
+"use client";
+import Link from "next/link";
+import { FormEvent, useState } from "react";
+import { createClient } from "@/lib/supabase/client";
+export default function UpdatePasswordPage(){
+ const [password,setPassword]=useState("");const [confirm,setConfirm]=useState("");const [message,setMessage]=useState("");const [done,setDone]=useState(false);const [busy,setBusy]=useState(false);
+ async function submit(e:FormEvent<HTMLFormElement>){e.preventDefault();setMessage("");if(password.length<8){setMessage("Use at least 8 characters.");return;}if(password!==confirm){setMessage("Your passwords do not match.");return;}setBusy(true);try{const supabase=createClient();const {error}=await supabase.auth.updateUser({password});if(error)throw error;setDone(true);}catch(err){setMessage(err instanceof Error?err.message:"Unable to update your password. Open the latest reset email and try again.");}finally{setBusy(false);}}
+ return <main className="auth-shell"><section className="auth-card"><div className="eyebrow gold-text">ACCOUNT RECOVERY</div><h1>Choose a new <em>password.</em></h1>{done?<><p className="muted">Your password has been updated.</p><Link className="btn btn-gold auth-button-link" href="/login">Go to sign in</Link></>:<><p className="muted">Create a new password for your account.</p><form className="auth-form" onSubmit={submit}><label>New password<input type="password" autoComplete="new-password" minLength={8} value={password} onChange={e=>setPassword(e.target.value)} required/></label><label>Confirm new password<input type="password" autoComplete="new-password" value={confirm} onChange={e=>setConfirm(e.target.value)} required/></label><button className="btn btn-gold" disabled={busy}>{busy?"Updating…":"Update password"}</button></form>{message&&<p className="auth-message" role="alert">{message}</p>}</>}<Link className="text-link" href="/login">← Back to sign in</Link></section></main>;
+}

@@ -1,0 +1,4 @@
+import Link from "next/link";
+export default function PartnerPage() {
+  return <main className="container page-shell"><div className="eyebrow gold-text">BUILDER & DEVELOPER PARTNERSHIPS</div><h1 className="page-title">Partner with <em>Unlock My Home.</em></h1><p className="muted">We welcome builders and developers interested in presenting authorised projects to property buyers.</p><div className="notice"><strong>Partner onboarding</strong><p>Our team will request project details, RERA registration where applicable, current pricing and availability, approved plans or brochures, permission to use your company identity, and a named sales contact.</p><p>Partnership and listing publication are subject to review and a separate written agreement.</p></div><Link className="btn btn-gold" href="/contact">Contact our team</Link></main>;
+}

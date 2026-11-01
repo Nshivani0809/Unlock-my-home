@@ -1,0 +1,4 @@
+import Link from "next/link";
+export default function SellPage() {
+  return <main className="container page-shell"><div className="eyebrow gold-text">SELL WITH US</div><h1 className="page-title">Bring your property to the <em>right buyers.</em></h1><p className="muted">Individual property owners and property dealers can create an account and submit multiple properties for review.</p><div className="notice"><strong>How it works</strong><p>Register → share property details and supporting documents → our team reviews the submission → approved listings can be published.</p><p>All listings are reviewed before they appear publicly. Please keep ownership or authorisation documents ready for the listing stage.</p></div><Link className="btn btn-gold" href="/register">Register as a seller</Link><p className="muted">Already registered? <Link className="text-link" href="/login">Login</Link></p></main>;
+}
