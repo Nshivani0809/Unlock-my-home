@@ -11,6 +11,7 @@ create table public.profiles (
   full_name text not null,
   phone text,
   role public.app_role not null default 'buyer',
+  account_type text not null default 'buyer' check (account_type in ('buyer','owner','dealer')),
   dealer_status text not null default 'not_applicable' check (dealer_status in ('not_applicable','pending','approved','suspended')),
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now()
@@ -100,13 +101,30 @@ create table public.audit_logs (
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
-  insert into public.profiles (id, full_name, phone, role)
-  values (new.id, coalesce(new.raw_user_meta_data->>'full_name','New user'), new.raw_user_meta_data->>'phone', 'buyer')
+  insert into public.profiles (id, full_name, phone, role, account_type, dealer_status)
+  values (new.id, coalesce(new.raw_user_meta_data->>'full_name','New user'), new.raw_user_meta_data->>'phone',
+    case when new.raw_user_meta_data->>'role' in ('dealer','seller') then (new.raw_user_meta_data->>'role')::public.app_role else 'buyer'::public.app_role end,
+    case when new.raw_user_meta_data->>'account_type' in ('buyer','owner','dealer') then new.raw_user_meta_data->>'account_type' else 'buyer' end,
+    case when new.raw_user_meta_data->>'role' = 'dealer' then 'pending' else 'not_applicable' end)
   on conflict (id) do nothing;
   return new;
 end; $$;
 create trigger on_auth_user_created after insert on auth.users
 for each row execute procedure public.handle_new_user();
+
+-- Users may edit their contact details, but cannot grant themselves a privileged role or dealer approval.
+create or replace function public.protect_profile_privileges()
+returns trigger language plpgsql security definer set search_path = public as $$
+begin
+  if auth.uid() = old.id and not public.is_admin() then
+    if new.role is distinct from old.role or new.dealer_status is distinct from old.dealer_status or new.account_type is distinct from old.account_type then
+      raise exception 'Role and approval status can only be changed by an administrator.';
+    end if;
+  end if;
+  return new;
+end; $$;
+create trigger protect_profile_privileges before update on public.profiles
+for each row execute procedure public.protect_profile_privileges();
 
 create or replace function public.current_app_role()
 returns public.app_role language sql stable security definer set search_path = public as $$
@@ -133,7 +151,7 @@ with check ((id = auth.uid() and role = (select p.role from public.profiles p wh
 create policy "public can view published properties" on public.properties for select
 using (listing_status = 'published' and admin_verified = true or owner_id = auth.uid() or public.is_admin());
 create policy "dealer seller can create own property" on public.properties for insert to authenticated
-with check (owner_id = auth.uid() and public.current_app_role() in ('dealer','seller'));
+with check (owner_id = auth.uid() and (public.current_app_role() = 'seller' or (public.current_app_role() = 'dealer' and exists (select 1 from public.profiles pr where pr.id = auth.uid() and pr.dealer_status = 'approved'))));
 create policy "owner can update own unpublished property" on public.properties for update to authenticated
 using ((owner_id = auth.uid() and listing_status in ('draft','rejected')) or public.is_admin())
 with check ((owner_id = auth.uid() and listing_status in ('draft','pending_review','rejected')) or public.is_admin());
