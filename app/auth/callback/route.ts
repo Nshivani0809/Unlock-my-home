@@ -6,8 +6,8 @@ export async function GET(request: NextRequest) {
   const next = searchParams.get("next") ?? "/";
   if (code) {
     const response = NextResponse.redirect(new URL(next.startsWith("/") && !next.startsWith("//") ? next : "/", origin));
-    const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-    const key = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+    const url = process.env.SUPABASE_URL;
+    const key = process.env.SUPABASE_ANON_KEY;
     if (!url || !key) return NextResponse.redirect(new URL("/login?error=auth-not-configured", origin));
     const supabase = createServerClient(url, key, { cookies: { getAll: () => request.cookies.getAll(), setAll: (cookies) => cookies.forEach(({ name, value, options }) => response.cookies.set(name, value, options)) } });
     const { error } = await supabase.auth.exchangeCodeForSession(code);
