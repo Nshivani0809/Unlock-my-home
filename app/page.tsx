@@ -35,20 +35,6 @@ export default function Home() {
       </form>
       <div className="cats">{categories.map(c=><Link className="cat" key={c.title} href={`/properties?type=${encodeURIComponent(c.type)}`}><span className="cat-icon">{c.icon}</span><b>{c.title}</b><span>{c.sub}</span></Link>)}</div>
     </div>
-    <section className="home-emi-strip">
-      <div className="wrap home-emi-inner">
-        <div>
-          <div className="kicker">PLAN YOUR HOME LOAN</div>
-          <h2>Know your monthly EMI before you buy.</h2>
-          <p>Estimate your monthly instalment, total interest and total repayment in seconds.</p>
-        </div>
-        <div className="home-emi-action">
-          <div className="home-emi-icon">₹</div>
-          <Link href="/calculator" className="home-emi-button">Calculate Home Loan EMI <span>→</span></Link>
-          <small>Free · Instant estimate · No sign-up required</small>
-        </div>
-      </div>
-    </section>
     <section className="reference-section">
       <div className="wrap feat">
         <div><div className="kicker">Featured properties</div><h2>Handpicked Properties for You</h2><p>Discover premium homes, verified listings and investment opportunities in Hyderabad and beyond.</p><Link href="/properties" className="btn-dark">View All Properties →</Link></div>
