@@ -23,14 +23,13 @@ export default function Home() {
         <div className="hero-eyebrow">Your trusted property partner</div>
         <h1>Find Your <em>Dream Home</em></h1>
         <p>Verified properties, trusted builders and expert guidance, all in one place.</p>
-        <div className="hero-links"><span>Buy</span><span>Sell</span><span>New Projects</span><span>Resale</span><span>Plots</span><span>Commercial</span></div>
         <div className="loc-card"><b>Hyderabad</b>and surrounding areas</div>
       </div>
     </section>
     <div className="wrap reference-search-wrap">
       <form action="/properties" className="reference-search">
         <input name="location" aria-label="Search locality, project or builder" placeholder="Search locality, project or builder..."/>
-        <select name="type" aria-label="Property type"><option value="">Property type: Any</option><option value="Apartment">Apartment</option><option value="Villa">Villa</option><option value="Independent Home">Independent Home</option><option value="Residential Plot">Plot</option><option value="Commercial Plot">Commercial</option></select>
+        <select name="type" aria-label="Property type"><option value="">Property type: Any</option><option value="Apartment">Apartment</option><option value="Villa">Villa</option><option value="Independent Home">Independent Home</option><option value="Residential Plot">Plot</option><option value="Commercial Space">Commercial Space</option></select>
         <select name="budget" aria-label="Budget"><option value="">Budget: Any</option><option value="5000000">Under 50L</option><option value="10000000">50L – 1 Cr</option><option value="20000000">1 Cr+</option></select>
         <select name="bhk" aria-label="BHK"><option value="">BHK: Any</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4+</option></select>
         <button className="search-btn" type="submit">Search</button>
