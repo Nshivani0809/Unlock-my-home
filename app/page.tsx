@@ -7,7 +7,7 @@ const categories = [
   { title: "Villas", sub: "Luxury & privacy", type: "Villa", icon: "⌂" },
   { title: "Independent Homes", sub: "Spacious & independent", type: "Independent Home", icon: "⌂" },
   { title: "Plots", sub: "Build your future", type: "Residential Plot", icon: "▱" },
-  { title: "Commercial", sub: "Grow your business", type: "Commercial Plot", icon: "▦" },
+  { title: "Commercial Space", sub: "Grow your business", type: "Commercial Space", icon: "▦" },
   { title: "New Projects", sub: "Latest launches", type: "New Project", icon: "✦" },
 ];
 const insights = [
