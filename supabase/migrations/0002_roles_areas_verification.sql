@@ -119,7 +119,7 @@ language sql stable security definer
 set search_path = public
 as $$
   select public.is_admin() or (
-    public.current_app_role() = 'area_manager'
+    public.current_app_role()::text = 'area_manager'
     and public.has_area_access(target_area)
   )
 $$;
@@ -129,9 +129,9 @@ create policy "approved listing accounts can create own property"
 on public.properties for insert to authenticated
 with check (
   owner_id = auth.uid()
-  and public.current_app_role() in ('seller','dealer','builder','agent')
+  and public.current_app_role()::text in ('seller','dealer','builder','agent')
   and (
-    public.current_app_role() = 'seller'
+    public.current_app_role()::text = 'seller'
     or exists (
       select 1 from public.profiles pr
       where pr.id = auth.uid()
