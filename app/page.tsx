@@ -45,7 +45,15 @@ export default function Home() {
     </section>
     <section className="reference-why">
       <div className="wrap why-grid">
-        <div className="story-photo"><div className="story-cover"><h3>More Than Just Properties...</h3><p>We're your partner in finding the right home.</p><div className="play"><i>▶</i>Our promise to buyers</div></div></div>
+<div className="story-photo">
+  <div className="story-cover">
+    <h3>More Than Just Properties...</h3>
+    <p>We&apos;re your partner in finding the right home.</p>
+    <div className="play">
+      <i>▶</i> Our promise to buyers
+    </div>
+  </div>
+</div>
         <div><div className="kicker">Why Unlock My Home</div><h2>Your Dream. Our Priority.</h2><p className="why-sub">We simplify your property journey with trusted advice, a transparent process and end-to-end support.</p>
           <div className="tiles"><div className="tile"><b>Verified Listings</b><span>Only genuine properties</span></div><div className="tile"><b>Trusted Builders</b><span>Checked before we list</span></div><div className="tile"><b>Expert Guidance</b><span>Personalised support</span></div><div className="tile"><b>Negotiation Support</b><span>Get the best deals</span></div><div className="tile"><b>Home Loan Assistance</b><span>Help understanding your options</span></div><div className="tile"><b>End-to-End Support</b><span>From search to possession</span></div></div>
         </div>
