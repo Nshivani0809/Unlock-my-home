@@ -163,3 +163,31 @@ h1,h2,h3,h4,.serif{font-family:'Fraunces',serif;font-weight:600;color:var(--navy
  .mobile-login{display:block}
 }
 @media(max-width:640px){.login-link{display:none}.btn-cta{padding:9px 14px}.brand .brand-name{font-size:18px}.brand small{font-size:9px}}
+
+
+/* Home loan EMI calculator — aligned with the navy, ivory and gold reference theme */
+.emi-layout{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:24px;margin:34px 0;align-items:stretch}
+.emi-panel,.emi-result{background:#fff;border:1px solid var(--line);border-radius:12px;padding:28px;box-shadow:0 10px 30px rgba(15,27,46,.05)}
+.emi-panel h2{font:600 24px 'Fraunces',serif;color:var(--navy);margin:0 0 8px}
+.emi-field{display:block;margin-top:20px}
+.emi-field span{display:block;font-size:12px;font-weight:600;color:var(--navy);margin-bottom:8px}
+.emi-field input{display:block;width:100%;min-height:48px;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:#fff;color:var(--ink);font:500 15px 'Work Sans',sans-serif}
+.emi-field input:focus{outline:2px solid rgba(233,180,76,.35);border-color:var(--golddeep)}
+.emi-reset{margin-top:22px;min-height:44px}
+.emi-result{background:linear-gradient(145deg,var(--navy),var(--navy2));color:#fff}
+.emi-result .eyebrow{color:var(--gold2)}
+.emi-main{font:600 clamp(32px,4vw,48px) 'Fraunces',serif;color:var(--gold);margin:12px 0 26px}
+.emi-result-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.emi-result-grid div{border-top:1px solid rgba(255,255,255,.16);padding-top:14px;min-width:0}
+.emi-result-grid span{display:block;color:#c5cddd;font-size:11px;margin-bottom:6px}
+.emi-result-grid strong{display:block;color:#fff;font:600 16px 'Work Sans',sans-serif;overflow-wrap:anywhere}
+.emi-breakdown{margin-top:26px}
+.emi-breakdown-bar{height:12px;border-radius:20px;background:var(--gold);overflow:hidden}
+.emi-breakdown-bar span{display:block;height:100%;background:#fff;border-radius:20px 0 0 20px}
+.emi-legend{display:flex;gap:18px;flex-wrap:wrap;margin-top:10px;color:#d5dbe6;font-size:11px}
+.emi-legend span{display:inline-flex;align-items:center;gap:7px}
+.emi-legend i{width:9px;height:9px;border-radius:50%;display:inline-block}
+.emi-principal-dot{background:#fff}.emi-interest-dot{background:var(--gold)}
+.emi-note{margin-top:12px}
+@media(max-width:760px){.emi-layout{grid-template-columns:1fr}.emi-panel,.emi-result{padding:22px}}
+@media(max-width:420px){.emi-result-grid{grid-template-columns:1fr}}
