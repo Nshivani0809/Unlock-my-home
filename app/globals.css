@@ -149,3 +149,17 @@ h1,h2,h3,h4,.serif{font-family:'Fraunces',serif;font-weight:600;color:var(--navy
 @media(max-width:900px){.reference-search{grid-template-columns:1fr 1fr}.cats{grid-template-columns:repeat(3,1fr)}.cat:nth-child(3){border-right:0}.logo-row{grid-template-columns:repeat(3,1fr)}.banners{grid-template-columns:1fr}.articles{grid-template-columns:repeat(2,1fr)}.footer-inner{grid-template-columns:1fr 1fr}}
 @media(max-width:760px){.wrap{padding:0 20px}.feat-cards{grid-template-columns:1fr}.dots{display:none}.builders-head{align-items:flex-start;flex-direction:column}}
 @media(max-width:560px){.reference-hero{min-height:420px}.reference-hero-inner{padding-top:56px;padding-bottom:95px}.reference-hero h1{font-size:42px}.reference-search{grid-template-columns:1fr}.cats{grid-template-columns:repeat(2,1fr)}.cat:nth-child(odd){border-right:1px solid var(--line)}.cat:nth-child(even){border-right:0}.tiles{grid-template-columns:1fr}.articles{grid-template-columns:1fr}.footer-inner{grid-template-columns:1fr}.footer-bottom{flex-direction:column}.banner{padding:26px}.reference-section,.reference-why{padding:56px 0}.reference-banners{padding-bottom:56px}.reference-insights{padding-bottom:56px}}
+
+.brand-name{display:block;font:600 20px 'Fraunces',serif;color:var(--navy);line-height:1.1}
+.menu-btn{display:none;background:#fff;border:1px solid var(--line);border-radius:8px;width:40px;height:40px;align-items:center;justify-content:center;flex-direction:column;gap:4px}
+.menu-btn span{width:18px;height:2px;background:var(--navy);display:block}
+.mobile-login{display:none}
+@media(max-width:1100px){
+ .nav{position:relative}
+ .nav-links{display:none;position:absolute;top:100%;left:0;right:0;background:#fff;flex-direction:column;gap:0;padding:6px 20px 14px;border-bottom:1px solid var(--line);box-shadow:0 14px 24px rgba(15,27,46,.08);z-index:70}
+ .nav-links.open{display:flex}
+ .nav-links a{padding:13px 0;border-bottom:1px solid var(--line)}
+ .menu-btn{display:flex}
+ .mobile-login{display:block}
+}
+@media(max-width:640px){.login-link{display:none}.btn-cta{padding:9px 14px}.brand .brand-name{font-size:18px}.brand small{font-size:9px}}
