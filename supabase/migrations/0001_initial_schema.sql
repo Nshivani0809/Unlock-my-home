@@ -101,11 +101,24 @@ create table public.audit_logs (
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
+  -- Never trust signup metadata to grant a privileged role.
+  -- Every new account starts as buyer; an administrator promotes sellers/dealers after review.
   insert into public.profiles (id, full_name, phone, role, account_type, dealer_status)
-  values (new.id, coalesce(new.raw_user_meta_data->>'full_name','New user'), new.raw_user_meta_data->>'phone',
-    case when new.raw_user_meta_data->>'role' in ('dealer','seller') then (new.raw_user_meta_data->>'role')::public.app_role else 'buyer'::public.app_role end,
-    case when new.raw_user_meta_data->>'account_type' in ('buyer','owner','dealer') then new.raw_user_meta_data->>'account_type' else 'buyer' end,
-    case when new.raw_user_meta_data->>'role' = 'dealer' then 'pending' else 'not_applicable' end)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'full_name','New user'),
+    new.raw_user_meta_data->>'phone',
+    'buyer'::public.app_role,
+    case
+      when new.raw_user_meta_data->>'account_type' in ('buyer','owner','dealer')
+        then new.raw_user_meta_data->>'account_type'
+      else 'buyer'
+    end,
+    case
+      when new.raw_user_meta_data->>'account_type' in ('owner','dealer') then 'pending'
+      else 'not_applicable'
+    end
+  )
   on conflict (id) do nothing;
   return new;
 end; $$;
