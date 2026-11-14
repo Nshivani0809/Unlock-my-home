@@ -16,7 +16,12 @@ export default function LoginPage() {
       const supabase = createClient();
       const { error } = await supabase.auth.signInWithPassword({ email: email.trim(), password });
       if (error) throw error;
-      router.replace("/"); router.refresh();
+      const { data: { user } } = await supabase.auth.getUser();
+      const { data: profile } = await supabase.from("profiles").select("account_type").eq("id", user?.id ?? "").maybeSingle();
+      const next = new URLSearchParams(window.location.search).get("next");
+      const safeNext = next && next.startsWith("/") && !next.startsWith("//") ? next : null;
+      router.replace(safeNext ?? (profile?.account_type === "dealer" || profile?.account_type === "owner" ? "/dealer" : "/"));
+      router.refresh();
     } catch (error) { setMessage(error instanceof Error ? error.message : "Unable to sign in. Please try again."); }
     finally { setBusy(false); }
   }

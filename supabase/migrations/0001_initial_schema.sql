@@ -101,16 +101,49 @@ create table public.audit_logs (
 create or replace function public.handle_new_user()
 returns trigger language plpgsql security definer set search_path = public as $$
 begin
+  -- Never trust signup metadata to grant a privileged role.
+  -- Every new account starts as buyer; an administrator promotes sellers/dealers after review.
   insert into public.profiles (id, full_name, phone, role, account_type, dealer_status)
-  values (new.id, coalesce(new.raw_user_meta_data->>'full_name','New user'), new.raw_user_meta_data->>'phone',
-    case when new.raw_user_meta_data->>'role' in ('dealer','seller') then (new.raw_user_meta_data->>'role')::public.app_role else 'buyer'::public.app_role end,
-    case when new.raw_user_meta_data->>'account_type' in ('buyer','owner','dealer') then new.raw_user_meta_data->>'account_type' else 'buyer' end,
-    case when new.raw_user_meta_data->>'role' = 'dealer' then 'pending' else 'not_applicable' end)
+  values (
+    new.id,
+    coalesce(new.raw_user_meta_data->>'full_name','New user'),
+    new.raw_user_meta_data->>'phone',
+    'buyer'::public.app_role,
+    case
+      when new.raw_user_meta_data->>'account_type' in ('buyer','owner','dealer')
+        then new.raw_user_meta_data->>'account_type'
+      else 'buyer'
+    end,
+    case
+      when new.raw_user_meta_data->>'account_type' in ('owner','dealer') then 'pending'
+      else 'not_applicable'
+    end
+  )
   on conflict (id) do nothing;
   return new;
 end; $$;
 create trigger on_auth_user_created after insert on auth.users
 for each row execute procedure public.handle_new_user();
+
+-- Backfill accounts that were created in Supabase Auth before this migration was applied.
+-- They also start with the safe buyer role; sellers/dealers must be approved by an administrator.
+insert into public.profiles (id, full_name, phone, role, account_type, dealer_status)
+select
+  u.id,
+  coalesce(u.raw_user_meta_data->>'full_name', 'New user'),
+  u.raw_user_meta_data->>'phone',
+  'buyer'::public.app_role,
+  case
+    when u.raw_user_meta_data->>'account_type' in ('buyer','owner','dealer')
+      then u.raw_user_meta_data->>'account_type'
+    else 'buyer'
+  end,
+  case
+    when u.raw_user_meta_data->>'account_type' in ('owner','dealer') then 'pending'
+    else 'not_applicable'
+  end
+from auth.users u
+on conflict (id) do nothing;
 
 -- Users may edit their contact details, but cannot grant themselves a privileged role or dealer approval.
 create or replace function public.protect_profile_privileges()
