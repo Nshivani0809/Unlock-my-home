@@ -68,6 +68,21 @@ export default function DealerOnboardingPage() {
       const { data: { user }, error: userError } = await supabase.auth.getUser();
       if (userError || !user) throw userError ?? new Error("Please sign in again.");
 
+      const selected = Object.entries(files) as [DocumentKind, File][];
+      const verificationRows: { profile_id: string; verification_type: DocumentKind; document_path: string; status: "pending" }[] = [];
+      for (const [kind, file] of selected) {
+        if (!["application/pdf", "image/jpeg", "image/png"].includes(file.type)) throw new Error("Please upload documents as PDF, JPG or PNG files.");
+        if (file.size > 20 * 1024 * 1024) throw new Error("Each document must be smaller than 20 MB.");
+        const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-").slice(-90);
+        const path = user.id + "/verification/" + crypto.randomUUID() + "-" + kind + "-" + safeName;
+        const { error: uploadError } = await supabase.storage.from("property-private").upload(path, file, { upsert: false, contentType: file.type });
+        if (uploadError) throw uploadError;
+        verificationRows.push({ profile_id: user.id, verification_type: kind, document_path: path, status: "pending" });
+      }
+      if (verificationRows.length) {
+        const { error: recordError } = await supabase.from("seller_verifications").insert(verificationRows);
+        if (recordError) throw recordError;
+      }
       const { error: profileError } = await supabase.from("profiles").update({
         phone: phone.trim(),
         business_name: businessName.trim() || null,
@@ -75,18 +90,6 @@ export default function DealerOnboardingPage() {
         onboarding_status: "submitted",
       }).eq("id", user.id);
       if (profileError) throw profileError;
-
-      const selected = Object.entries(files) as [DocumentKind, File][];
-      for (const [kind, file] of selected) {
-        const safeName = file.name.toLowerCase().replace(/[^a-z0-9._-]+/g, "-").slice(-90);
-        const path = user.id + "/verification/" + Date.now() + "-" + kind + "-" + safeName;
-        const { error: uploadError } = await supabase.storage.from("property-private").upload(path, file, { upsert: false, contentType: file.type });
-        if (uploadError) throw uploadError;
-        const { error: recordError } = await supabase.from("seller_verifications").insert({
-          profile_id: user.id, verification_type: kind, document_path: path, status: "pending",
-        });
-        if (recordError) throw recordError;
-      }
       setMessage("Your seller details and documents have been submitted. Our team will review them. Your account cannot publish listings until approval.");
       router.refresh();
     } catch (error) {
